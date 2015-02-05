@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+var debug = require('debug')('quickclient');
+var app = require('../app');
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
+var privateKey  = fs.readFileSync('certs/key.pem', 'utf8');
+var certificate = fs.readFileSync('certs/cert.pem', 'utf8');
+
+var credentials = {key: privateKey, cert: certificate};
+app.set('port', process.env.PORT || 3000);
+app.set('secure_port', process.env.SECUREPORT || 3443);
+
+http.createServer(app).listen(app.get('port'), function() {
+  debug('Express server listening on port ' + app.get('port'));
+});
+
+https.createServer(credentials, app).listen(app.get('secure_port'), function() {
+  debug('Express server listening on secure_port ' + app.get('secure_port'));
+});

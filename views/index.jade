@@ -1,0 +1,50 @@
+extends layout
+
+block content
+  div.row
+    div.col-md-5
+      - var saved = (form !== undefined)
+
+      form(method='post', action='/login')
+        div.form-group
+          label(for='callbackUrl') Callback Url
+          input(type='url', class='form-control callbackurl', disabled='disabled', placeholder='CallbackUrl')
+          input(type='hidden', class='callbackurl', id='callbackurl', name='callbackurl')
+          p.text-primary Make sure you use this value as the callback url of your registered client application.
+            
+        div.form-group
+          label(for='clientid') Client Id
+          input(type='text', class='form-control', id='clientid', name='clientid', placeholder='Client Id', value=saved ? form['clientid'] : '')
+          
+        div.form-group
+          label(for='secret') Secret
+          input(type='password', class='form-control', id='secret', name='secret', placeholder='Secret', value=saved ? form['secret'] : '')
+          
+        div.form-group
+          label(for='authurl') Authorization Url
+          input(type='url', class='form-control', id='authurl', name='authurl', placeholder='Authorization Url', value=saved ? form['authurl'] : '')
+          
+        div.form-group
+          label(for='tokenurl') Token Url
+          input(type='url', class='form-control', id='tokenurl', name='tokenurl', placeholder='Token Url', value=saved ? form['tokenurl'] : '')
+          
+        div.form-group
+          label(for='scope') Scope (optional)
+          input(type='text', class='form-control', id='scope', name='scope', placeholder='Scope (optional)', value=saved ? form['scope'] : '')
+          
+        input(class='btn btn-primary', type='submit', value='Get Token')
+
+  if results
+    div.row
+      div.col-md-5
+        h2 Results
+      
+        pre.language-javascript
+          code!=results
+
+  script(type='text/javascript').
+    $(function() {
+      var el = $('.callbackurl');
+      var host = window.location.host
+      el.val('https://' + host + '/oauth2/callback');
+    });
